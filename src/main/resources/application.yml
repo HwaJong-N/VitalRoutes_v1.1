@@ -1,0 +1,48 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/vitalroute
+    username: root
+    password: root
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  # Image File Size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+  # Mail Service
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        debug: true
+        smtp.auth: true
+        smtp.timeout: 50000
+        smtp.starttls.enable: true
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_APP_KEY}
+
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate.format_sql: true
+
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+
+kakao:
+  login:
+    client-id: ${KAKAO_CLIENT_ID}
+    redirect-uri: http://localhost:3000/member/kakao
+
+firebase:
+  bucket: ${BUCKET}
+  config-file-path: ${CONFIG_FILE_PATH}
+  read-url: ${READ_URL}
