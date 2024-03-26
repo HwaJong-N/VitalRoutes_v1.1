@@ -1,0 +1,51 @@
+# Workflow 이름
+name: Java CI with Gradle
+
+# Event 지정
+on:
+  push:
+    branches: [ "main" ]
+
+# Workflow 내 Job 을 정의
+jobs:
+  # Job 의 이름
+  CI-build:
+    # Runner 환경 정의
+    runs-on: ubuntu-latest
+
+    # Step 정의
+    steps:
+    # 정의된 Actions 의 체크아웃 사용
+    - uses: actions/checkout@v4
+
+    # 1. jdk 세팅
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # 2. firebase key 생성
+    - name: create-firebase-key
+      run: |
+        cd ./src/main/resources
+        ls -a .
+        touch ./firebase-service-key.json
+        echo "${{ secrets.FIREBASE_KEY }}" > ./firebase-service-key.json
+      shell: bash
+
+    # 3. Gradle Caching
+    - name: Gradle Caching
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    # 4. Gradle build
+    - name: Build with Gradle Wrapper
+      run: chmod +x ./gradlew
+          ./gradlew clean build -x test
