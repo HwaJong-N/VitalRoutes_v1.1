@@ -36,20 +36,29 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    # 3. Gradle build
+    # 3. craete firebase key
+    - name: create firebase key
+      run: |
+        cd ./src/main/resources
+        ls -a .
+        touch ./firebase-service-key.json
+        echo "${{ secrets.FIREBASE_KEY }}" > ./firebase-service-key.json
+      shell: bash
+
+    # 4. Gradle build
     - name: Build with Gradle Wrapper
       run: |
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
-    # 4. docker build & push
+    # 5. docker build & push
     - name: docker build and push
       run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/vitalroutes-spring ./
           docker push ${{ secrets.DOCKER_USERNAME }}/vitalroutes-spring
 
-    # 5. Docker Compose Start
+    # 6. Docker Compose Start
     - name: SSH into Ubuntu Server
       uses: appleboy/ssh-action@master
       with:
