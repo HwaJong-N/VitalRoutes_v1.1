@@ -113,10 +113,10 @@ public class ChallengeService {
             boolean likeContains = myLikeChallengeId.contains(challengeId);
             boolean bookmarkContains = myBookmarkChallengeId.contains(challengeId);
             if (likeContains) {
-                challengeListDTO.setLike(true);
+                challengeListDTO.setLikeFlag(true);
             }
             if (bookmarkContains) {
-                challengeListDTO.setBookmark(true);
+                challengeListDTO.setBookmarkFlag(true);
             }
         }
 

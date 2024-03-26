@@ -20,13 +20,13 @@ public class ChallengeResponseDTO {
     private long viewCount;
     private long likeCount;
     private long bookmarkCount;
-    private boolean isLike;
-    private boolean isBookmark;
+    private boolean likeFlag;
+    private boolean bookmarkFlag;
     private List<String> tagList;
     private String titleImgURL;
     private List<LocationResponseDTO> imageList;
 
-    public ChallengeResponseDTO(Challenge challenge, boolean likeFlag, boolean bookmarkFlag) {
+    public ChallengeResponseDTO(Challenge challenge, boolean like, boolean bookmark) {
         challengeId = challenge.getChallengeId();
         memberId = challenge.getMember().getMemberId();
         profileImg = challenge.getMember().getProfile();
@@ -41,7 +41,7 @@ public class ChallengeResponseDTO {
         tagList = challenge.getTagList().stream().map(ChallengeTag::getTagKo).toList();
         titleImgURL = challenge.getTitleImg();
         imageList = challenge.getLocationList().stream().map(LocationResponseDTO::new).toList();
-        isLike = likeFlag;
-        isBookmark = bookmarkFlag;
+        likeFlag = like;
+        bookmarkFlag = bookmark;
     }
 }

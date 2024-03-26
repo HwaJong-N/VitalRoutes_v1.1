@@ -9,8 +9,8 @@ public class ChallengeListDTO {
     private String title;
     private String titleImg;
     private long participationCount;
-    private boolean isLike = false;
-    private boolean isBookmark = false;
+    private boolean likeFlag = false;
+    private boolean bookmarkFlag = false;
 
     public ChallengeListDTO(Long id, String cTitle, String cTitleImg, long cpCount) {
         challengeId = id;
