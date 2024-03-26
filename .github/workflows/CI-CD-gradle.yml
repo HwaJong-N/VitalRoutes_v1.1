@@ -66,6 +66,7 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
-           sudo docker rm -f $(docker ps -qa)
-           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vitalroutes-spring
-           sudo docker-compose up -d
+          docker-compose stop
+          docker rm -f $(docker ps -qa)
+          docker pull ${{ secrets.DOCKER_USERNAME }}/vitalroutes-spring
+          docker-compose up -d
