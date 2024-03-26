@@ -47,5 +47,6 @@ jobs:
 
     # 4. Gradle build
     - name: Build with Gradle Wrapper
-      run: chmod +x ./gradlew
+      run: |
+          chmod +x ./gradlew
           ./gradlew clean build -x test
