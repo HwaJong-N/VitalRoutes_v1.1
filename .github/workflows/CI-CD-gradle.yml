@@ -1,5 +1,5 @@
 # Workflow 이름
-name: Java CI with Gradle
+name: CI/CD with Gradle
 
 # Event 지정
 on:
@@ -9,7 +9,7 @@ on:
 # Workflow 내 Job 을 정의
 jobs:
   # Job 의 이름
-  CI-build:
+  CI-CD-build:
     # Runner 환경 정의
     runs-on: ubuntu-latest
 
@@ -25,16 +25,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    # 2. firebase key 생성
-    - name: create-firebase-key
-      run: |
-        cd ./src/main/resources
-        ls -a .
-        touch ./firebase-service-key.json
-        echo "${{ secrets.FIREBASE_KEY }}" > ./firebase-service-key.json
-      shell: bash
-
-    # 3. Gradle Caching
+    # 2. Gradle Caching
     - name: Gradle Caching
       uses: actions/cache@v3
       with:
@@ -45,8 +36,27 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    # 4. Gradle build
+    # 3. Gradle build
     - name: Build with Gradle Wrapper
       run: |
           chmod +x ./gradlew
           ./gradlew clean build -x test
+
+    # 4. docker build & push
+    - name: docker build and push
+      run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/vitalroutes-spring ./
+          docker push ${{ secrets.DOCKER_USERNAME }}/vitalroutes-spring
+
+    # 5. Docker Compose Start
+    - name: SSH into Ubuntu Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: |
+           sudo docker rm -f $(docker ps -qa)
+           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/vitalroutes-spring
+           sudo docker-compose up -d
