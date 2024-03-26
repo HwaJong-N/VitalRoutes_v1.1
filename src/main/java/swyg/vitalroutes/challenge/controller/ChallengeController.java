@@ -43,7 +43,7 @@ public class ChallengeController {
     @GetMapping("/list")
     public ApiResponseDTO<?> viewChallengeList(@PageableDefault(size = 12) Pageable pageable) {
         Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<ChallengeListDTO> allChallenges = challengeService.findAllChallenges(member, pageable);
+        DataWithCount<?> allChallenges = challengeService.findAllChallenges(member, pageable);
         return new ApiResponseDTO<>(OK, SUCCESS, null, allChallenges);
     }
 

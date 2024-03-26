@@ -11,10 +11,12 @@ public class ChallengeResponseDTO {
     // 상세 화면
     private Long challengeId;
     private Long memberId;
+    private String profileImg;
     private String nickname;
     private String title;
     private String content;
     private String type;
+    private long totalParticipation;
     private long viewCount;
     private long likeCount;
     private long bookmarkCount;
@@ -27,10 +29,12 @@ public class ChallengeResponseDTO {
     public ChallengeResponseDTO(Challenge challenge, boolean likeFlag, boolean bookmarkFlag) {
         challengeId = challenge.getChallengeId();
         memberId = challenge.getMember().getMemberId();
+        profileImg = challenge.getMember().getProfile();
         nickname = challenge.getMember().getNickname();
         title = challenge.getTitle();
         content = challenge.getContent();
         type = challenge.getType().name();
+        totalParticipation = challenge.getParticipationList().size();
         viewCount = challenge.getViewCount();
         likeCount = challenge.getLikeCount();
         bookmarkCount = challenge.getBookmarkCount();

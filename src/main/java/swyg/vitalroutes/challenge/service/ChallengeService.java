@@ -104,11 +104,11 @@ public class ChallengeService {
     }
 
     // 챌린지 상세 조회 ( 좋아요 여부, 북마크 여부 )
-    public List<ChallengeListDTO> findAllChallenges(Member member, Pageable pageable) {
-        List<ChallengeListDTO> allChallenge = challengeRepository.findAllChallenge(pageable);
+    public DataWithCount<?> findAllChallenges(Member member, Pageable pageable) {
+        Page<ChallengeListDTO> allChallenge = challengeRepository.findAllChallenge(pageable);
         List<Long> myLikeChallengeId = likeAndBookmarkRepository.findMyReactionChallengeId(member, ReactionType.LIKE);
         List<Long> myBookmarkChallengeId = likeAndBookmarkRepository.findMyReactionChallengeId(member, ReactionType.BOOKMARK);
-        for (ChallengeListDTO challengeListDTO : allChallenge) {
+        for (ChallengeListDTO challengeListDTO : allChallenge.getContent()) {
             Long challengeId = challengeListDTO.getChallengeId();
             boolean likeContains = myLikeChallengeId.contains(challengeId);
             boolean bookmarkContains = myBookmarkChallengeId.contains(challengeId);
@@ -119,7 +119,11 @@ public class ChallengeService {
                 challengeListDTO.setBookmark(true);
             }
         }
-        return allChallenge;
+
+        long count = allChallenge.getTotalElements();
+        boolean remainFlag = allChallenge.hasNext();
+
+        return new DataWithCount<>(count, remainFlag, allChallenge.getContent());
     }
 
     public void modifyChallenge(Long challengeId, ChallengeModifyDTO modifyDTO) {

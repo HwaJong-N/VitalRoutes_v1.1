@@ -21,8 +21,8 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     @Query("select c from Challenge c join fetch c.member where c.challengeId = :challengeId")
     Optional<Challenge> findByChallengeId(@Param("challengeId") Long challengeId);
 
-    @Query("select new swyg.vitalroutes.challenge.dto.ChallengeListDTO(c.challengeId, c.title, count(cp)) from Challenge c left join c.participationList cp group by c.challengeId")
-    List<ChallengeListDTO> findAllChallenge(Pageable pageable);
+    @Query("select new swyg.vitalroutes.challenge.dto.ChallengeListDTO(c.challengeId, c.title, c.titleImg, count(cp)) from Challenge c left join c.participationList cp group by c.challengeId order by c.challengeId desc")
+    Page<ChallengeListDTO> findAllChallenge(Pageable pageable);
 
     // 내가 등록한 챌린지
     @Query("select new swyg.vitalroutes.challenge.dto.ChallengeConditionDTO(c.challengeId, c.title) from Challenge c where c.member = :member")
