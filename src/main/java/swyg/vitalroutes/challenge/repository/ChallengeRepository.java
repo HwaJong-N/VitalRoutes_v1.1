@@ -13,14 +13,11 @@ import swyg.vitalroutes.member.domain.Member;
 
 import java.util.Optional;
 
-public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
+public interface ChallengeRepository extends JpaRepository<Challenge, Long>, ChallengeSearchRepository {
 
     @EntityGraph(attributePaths = "tagList")
     @Query("select c from Challenge c join fetch c.member where c.challengeId = :challengeId")
     Optional<Challenge> findByChallengeId(@Param("challengeId") Long challengeId);
-
-    @Query("select new swyg.vitalroutes.challenge.dto.ChallengeListDTO(c.challengeId, c.title, c.titleImg, count(cp)) from Challenge c left join c.participationList cp group by c.challengeId order by c.challengeId desc")
-    Page<ChallengeListDTO> findAllChallenge(Pageable pageable);
 
     // 내가 등록한 챌린지
     @Query("select new swyg.vitalroutes.challenge.dto.ChallengeListDTO(c.challengeId, c.title, c.titleImg, count(cp)) from Challenge c left join c.participationList cp where c.member = :member")

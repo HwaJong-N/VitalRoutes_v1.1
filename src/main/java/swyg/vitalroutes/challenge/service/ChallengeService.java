@@ -104,8 +104,8 @@ public class ChallengeService {
     }
 
     // 챌린지 상세 조회 ( 좋아요 여부, 북마크 여부 )
-    public DataWithCount<?> findAllChallenges(Member member, Pageable pageable) {
-        Page<ChallengeListDTO> allChallenge = challengeRepository.findAllChallenge(pageable);
+    public DataWithCount<?> findAllChallenges(Member member, Pageable pageable, String searchType) {
+        Page<ChallengeListDTO> allChallenge = challengeRepository.findAllChallenge(pageable, searchType);
         List<Long> myLikeChallengeId = likeAndBookmarkRepository.findMyReactionChallengeId(member, ReactionType.LIKE);
         List<Long> myBookmarkChallengeId = likeAndBookmarkRepository.findMyReactionChallengeId(member, ReactionType.BOOKMARK);
         for (ChallengeListDTO challengeListDTO : allChallenge.getContent()) {

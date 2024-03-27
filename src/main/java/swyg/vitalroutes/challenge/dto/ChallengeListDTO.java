@@ -18,4 +18,11 @@ public class ChallengeListDTO {
         titleImg = cTitleImg;
         participationCount = cpCount;
     }
+
+    public ChallengeListDTO(Long id, String cTitle, String cTitleImg, int cpCount) {
+        challengeId = id;
+        title = cTitle;
+        titleImg = cTitleImg;
+        participationCount = (long) cpCount;
+    }
 }
