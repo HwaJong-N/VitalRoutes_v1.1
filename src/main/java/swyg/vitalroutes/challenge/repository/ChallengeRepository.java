@@ -31,6 +31,6 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     Page<ChallengeListDTO> findParticipateChallenge(@Param("member") Member member, Pageable pageable);
 
     // 내가 좋아요 or 북마크한 챌린지
-    @Query("select new swyg.vitalroutes.challenge.dto.ChallengeListDTO(c.challengeId, c.title, c.titleImg, count(cp)) from Challenge c left join c.participationList cp join ChallengeLikeAndBookmark  clb on c.challengeId = clb.challenge.challengeId where clb.member = :member and clb.reactionType = :type")
+    @Query("select new swyg.vitalroutes.challenge.dto.ChallengeListDTO(c.challengeId, c.title, c.titleImg, count(cp)) from Challenge c left join ChallengeLikeAndBookmark  clb on c.challengeId = clb.challenge.challengeId left join c.participationList cp where clb.member = :member and clb.reactionType = :type group by c.challengeId, c.title, c.titleImg")
     Page<ChallengeListDTO> findReactionChallenges(@Param("member") Member member, @Param("type") ReactionType type, Pageable pageable);
 }
