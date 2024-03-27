@@ -137,7 +137,7 @@ public class ChallengeService {
 
     // 내가 등록한 챌린지
     public DataWithCount<?> findMyChallenges(Member member, Pageable pageable) {
-        Page<ChallengeConditionDTO> myChallenges = challengeRepository.findMyChallenges(member, pageable);
+        Page<ChallengeListDTO> myChallenges = challengeRepository.findMyChallenges(member, pageable);
         long count = myChallenges.getTotalElements();
         boolean remainFlag = myChallenges.hasNext();
         return new DataWithCount<>(count, remainFlag, myChallenges.getContent());
@@ -145,7 +145,7 @@ public class ChallengeService {
 
     // 내가 참여한 챌린지
     public DataWithCount<?> findParticipateChallenges(Member member, Pageable pageable) {
-        Page<ChallengeConditionDTO> participateChallenge = challengeRepository.findParticipateChallenge(member, pageable);
+        Page<ChallengeListDTO> participateChallenge = challengeRepository.findParticipateChallenge(member, pageable);
         long count = participateChallenge.getTotalElements();
         boolean remainFlag = participateChallenge.hasNext();
         return new DataWithCount<>(count, remainFlag, participateChallenge.getContent());
@@ -153,7 +153,14 @@ public class ChallengeService {
 
     // 내가 좋아요한 or 북마크한 챌린지
     public DataWithCount<?> findReactionChallenges(Member member, ReactionType type, Pageable pageable) {
-        Page<ChallengeConditionDTO> reactionChallenges = challengeRepository.findReactionChallenges(member, type, pageable);
+        Page<ChallengeListDTO> reactionChallenges = challengeRepository.findReactionChallenges(member, type, pageable);
+        for (ChallengeListDTO challenge : reactionChallenges.getContent()) {
+            if (type == ReactionType.LIKE) {
+                challenge.setLikeFlag(true);
+            } else {
+                challenge.setBookmarkFlag(true);
+            }
+        }
         long count = reactionChallenges.getTotalElements();
         boolean remainFlag = reactionChallenges.hasNext();
         return new DataWithCount<>(count, remainFlag, reactionChallenges.getContent());
