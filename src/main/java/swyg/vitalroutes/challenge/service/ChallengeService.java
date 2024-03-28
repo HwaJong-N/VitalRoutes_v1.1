@@ -18,6 +18,7 @@ import swyg.vitalroutes.common.response.DataWithCount;
 import swyg.vitalroutes.common.utils.FileUtils;
 import swyg.vitalroutes.challenge.domain.ChallengeLocation;
 import swyg.vitalroutes.firebase.service.FirebaseService;
+import swyg.vitalroutes.kakao.service.KakaoMapService;
 import swyg.vitalroutes.member.domain.Member;
 import swyg.vitalroutes.member.repository.MemberRepository;
 
@@ -37,6 +38,7 @@ public class ChallengeService {
     private final MemberRepository memberRepository;
     private final LikeAndBookmarkRepository likeAndBookmarkRepository;
     private final FirebaseService firebaseService;
+    private final KakaoMapService kakaoMapService;
 
     public void saveChallenge(Long memberId, ChallengeSaveDTO saveDTO) {
         Member member = memberRepository.findById(memberId)
@@ -77,7 +79,15 @@ public class ChallengeService {
             throw new ChallengeException(INTERNAL_SERVER_ERROR, ERROR, exception.getMessage());
         }
 
-        Challenge challenge = Challenge.createChallenge(member, challengeLocationList, tagList, saveDTO.getTitle(), saveDTO.getContent(), titleImgUrl, type);
+        // 첫 번째 좌표를 기준으로 지역 정보 추출
+        ChallengeLocation challengeLocation = challengeLocationList.get(0);
+        String[] mapInfo = kakaoMapService.getRegion(challengeLocation);
+        String roadAddress = mapInfo[0];
+        String region = mapInfo[1];
+
+        Challenge challenge = Challenge.createChallenge(member, challengeLocationList, tagList,
+                saveDTO.getTitle(), saveDTO.getContent(),
+                titleImgUrl, type, roadAddress, region);
         challengeRepository.save(challenge);
     }
 

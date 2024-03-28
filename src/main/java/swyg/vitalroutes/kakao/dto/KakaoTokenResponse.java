@@ -1,4 +1,4 @@
-package swyg.vitalroutes.security.domain;
+package swyg.vitalroutes.kakao.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

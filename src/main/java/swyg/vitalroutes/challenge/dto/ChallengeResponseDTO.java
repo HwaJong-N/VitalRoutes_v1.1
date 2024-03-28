@@ -16,6 +16,8 @@ public class ChallengeResponseDTO {
     private String title;
     private String content;
     private String type;
+    private String roadAddress;
+    private String region;
     private long totalParticipation;
     private long viewCount;
     private long likeCount;
@@ -34,6 +36,8 @@ public class ChallengeResponseDTO {
         title = challenge.getTitle();
         content = challenge.getContent();
         type = challenge.getType().name();
+        roadAddress = challenge.getRoadAddress();
+        region = challenge.getRegion();
         totalParticipation = challenge.getParticipationList().size();
         viewCount = challenge.getViewCount();
         likeCount = challenge.getLikeCount();

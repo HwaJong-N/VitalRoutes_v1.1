@@ -1,10 +1,6 @@
-package swyg.vitalroutes.security.controller;
+package swyg.vitalroutes.kakao.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,8 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import swyg.vitalroutes.common.response.ApiResponseDTO;
 import swyg.vitalroutes.member.domain.Member;
 import swyg.vitalroutes.member.domain.SocialType;
-import swyg.vitalroutes.security.dto.SocialMemberDTO;
-import swyg.vitalroutes.security.service.KakaoLoginService;
+import swyg.vitalroutes.kakao.service.KakaoLoginService;
 import swyg.vitalroutes.security.utils.JwtConstants;
 import swyg.vitalroutes.security.utils.JwtTokenProvider;
 
@@ -29,7 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.OK;
-import static swyg.vitalroutes.common.response.ResponseType.ONGOING;
 import static swyg.vitalroutes.common.response.ResponseType.SUCCESS;
 
 @Tag(name = "Kakao Login API Controller", description = "카카오 소셜 로그인을 위한 controller ")

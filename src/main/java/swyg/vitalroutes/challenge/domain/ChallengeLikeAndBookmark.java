@@ -21,6 +21,7 @@ public class ChallengeLikeAndBookmark {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Enumerated(value = EnumType.STRING)
     private ReactionType reactionType;
 
     public static ChallengeLikeAndBookmark createChallengeLikeAndBookmark(Member member, Challenge challenge, ReactionType reactionType) {

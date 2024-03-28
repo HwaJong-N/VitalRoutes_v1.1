@@ -31,6 +31,10 @@ public class Challenge {
     private long likeCount; // 좋아요 수
     private long bookmarkCount; // 북마크 수
 
+    private String roadAddress;
+    private String region;
+
+
     @Enumerated(value = EnumType.STRING)
     private ChallengeType type;
 
@@ -78,7 +82,7 @@ public class Challenge {
     }
 
     public static Challenge createChallenge(Member member, List<ChallengeLocation> locationList, List<ChallengeTag> tagList,
-                                            String title, String content, String titleImg, ChallengeType type) {
+                                            String title, String content, String titleImg, ChallengeType type, String roadAddress, String region) {
         Challenge challenge = new Challenge();
         // 기본 세팅
         challenge.setViewCount(0L);
@@ -91,7 +95,9 @@ public class Challenge {
         challenge.setContent(content);
         challenge.setTitleImg(titleImg);
         challenge.setType(type);
-        
+        challenge.setRoadAddress(roadAddress);
+        challenge.setRegion(region);
+
         // 회원 세팅, 단방향
         challenge.setMember(member);
         

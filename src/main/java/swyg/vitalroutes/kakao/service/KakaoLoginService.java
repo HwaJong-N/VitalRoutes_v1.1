@@ -1,4 +1,4 @@
-package swyg.vitalroutes.security.service;
+package swyg.vitalroutes.kakao.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +15,8 @@ import swyg.vitalroutes.common.response.ResponseType;
 import swyg.vitalroutes.member.domain.Member;
 import swyg.vitalroutes.member.domain.SocialType;
 import swyg.vitalroutes.member.repository.MemberRepository;
-import swyg.vitalroutes.security.domain.KakaoTokenResponse;
-import swyg.vitalroutes.security.domain.KakaoUserInfoResponse;
+import swyg.vitalroutes.kakao.dto.KakaoTokenResponse;
+import swyg.vitalroutes.kakao.dto.KakaoUserInfoResponse;
 
 import java.util.Optional;
 import java.util.Random;
