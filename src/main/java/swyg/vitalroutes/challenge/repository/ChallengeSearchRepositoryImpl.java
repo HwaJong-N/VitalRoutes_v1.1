@@ -4,6 +4,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -36,7 +37,7 @@ public class ChallengeSearchRepositoryImpl implements ChallengeSearchRepository 
      */
 
     @Override
-    public Page<ChallengeListDTO> findAllChallenge(Pageable pageable, String searchType) {
+    public Page<ChallengeListDTO> findAllChallenge(Pageable pageable, String searchType, String searchWord) {
         List<ChallengeListDTO> content = queryFactory
                 .select(Projections.constructor(ChallengeListDTO.class,
                         challenge.challengeId,
@@ -44,7 +45,7 @@ public class ChallengeSearchRepositoryImpl implements ChallengeSearchRepository 
                         challenge.titleImg,
                         challenge.participationList.size()))
                 .from(challenge)
-                .where(tagContains(searchType), typeEq(searchType))
+                .where(tagContains(searchType), typeEq(searchType), searchWordLike(searchWord))
                 .leftJoin(challenge.participationList, participation)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -59,6 +60,25 @@ public class ChallengeSearchRepositoryImpl implements ChallengeSearchRepository 
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    private Predicate searchWordLike(String searchWord) {
+        if (StringUtils.hasText(searchWord)) {
+            return titleLike(searchWord).or(roadAddressLike(searchWord)).or(regionLike(searchWord));
+        }
+        return null;
+    }
+
+    private BooleanExpression titleLike(String searchWord) {
+        return challenge.title.contains(searchWord);
+    }
+
+    private BooleanExpression roadAddressLike(String searchWord) {
+        return challenge.roadAddress.contains(searchWord);
+    }
+
+    private BooleanExpression regionLike(String searchWord) {
+        return challenge.region.contains(searchWord);
     }
 
     private Predicate typeEq(String searchType) {

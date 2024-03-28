@@ -41,9 +41,11 @@ public class ChallengeController {
 
     // 챌린지 목록 조회 ( 좋아요, 북마크 했는지 여부 )
     @GetMapping("/list")
-    public ApiResponseDTO<?> viewChallengeList(@PageableDefault(size = 12) Pageable pageable, @RequestParam(value = "searchType", defaultValue = "") String searchType) {
+    public ApiResponseDTO<?> viewChallengeList(@PageableDefault(size = 12) Pageable pageable,
+                                               @RequestParam(value = "searchType", defaultValue = "") String searchType,
+                                               @RequestParam(value = "searchWord", defaultValue = "") String searchWord) {
         Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        DataWithCount<?> allChallenges = challengeService.findAllChallenges(member, pageable, searchType);
+        DataWithCount<?> allChallenges = challengeService.findAllChallenges(member, pageable, searchType, searchWord);
         return new ApiResponseDTO<>(OK, SUCCESS, null, allChallenges);
     }
 

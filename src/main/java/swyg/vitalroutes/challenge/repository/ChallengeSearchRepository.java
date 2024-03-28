@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.Query;
 import swyg.vitalroutes.challenge.dto.ChallengeListDTO;
 
 public interface ChallengeSearchRepository {
-    Page<ChallengeListDTO> findAllChallenge(Pageable pageable, String searchType);
+    Page<ChallengeListDTO> findAllChallenge(Pageable pageable, String searchType, String searchWord);
 }
