@@ -6,18 +6,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import swyg.vitalroutes.common.exception.MemberModifyException;
 import swyg.vitalroutes.common.exception.MemberSignUpException;
+import swyg.vitalroutes.common.utils.FileUtils;
+import swyg.vitalroutes.firebase.service.FirebaseService;
 import swyg.vitalroutes.member.domain.Member;
 import swyg.vitalroutes.member.domain.SocialType;
 import swyg.vitalroutes.member.dto.*;
 import swyg.vitalroutes.member.repository.MemberRepository;
 import swyg.vitalroutes.security.dto.SocialMemberDTO;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static swyg.vitalroutes.common.response.ResponseType.ERROR;
 import static swyg.vitalroutes.common.response.ResponseType.FAIL;
 
 @Slf4j
@@ -28,6 +34,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FirebaseService firebaseService;
 
     public void duplicateNicknameCheck(MemberNicknameDTO dto) {
         String nickname = dto.getNickname();
@@ -102,17 +109,17 @@ public class MemberService {
          * 4. 이전 비밀번호는 일치하는지 확인, 새 비밀번호는 규칙에 맞는지 확인
          */
 
-        if (memberModifyDTO.getName() != null) {
+        if (StringUtils.hasText(memberModifyDTO.getName())) {
             // 일반 JPA 와 동일하게 엔티티 변경하면 하면 커밋 시점에 자동으로 update
             member.setName(memberModifyDTO.getName());
         }
 
-        if (memberModifyDTO.getNickname() != null) {
+        if (StringUtils.hasText(memberModifyDTO.getNickname())) {
             // 닉네임 중복 확인을 하지 않았더라도 DB 에 저장될 때 유니크 제약조건에 의해 예외 발생 -> Controller 에서 처리
             member.setNickname(memberModifyDTO.getNickname());
         }
 
-        if (memberModifyDTO.getEmail() != null) {
+        if (StringUtils.hasText(memberModifyDTO.getEmail())) {
             // 이메일이 비어있는데 일반 회원인 경우
             if (!StringUtils.hasText(memberModifyDTO.getEmail()) && !socialFlag) {
                 throw new MemberModifyException(BAD_REQUEST, FAIL, "일반회원은 이메일을 비워둘 수 없습니다");
@@ -120,9 +127,9 @@ public class MemberService {
             member.setEmail(memberModifyDTO.getEmail());
         }
 
-        if (memberModifyDTO.getNewPassword() != null && memberModifyDTO.getPrePassword() == null) {
+        if (StringUtils.hasText(memberModifyDTO.getNewPassword()) &&  !StringUtils.hasText(memberModifyDTO.getPrePassword())) {
             throw new MemberModifyException(BAD_REQUEST, FAIL, "비밀번호 변경 시에는 이전 비밀번호와 새 비밀번호를 입력해주세요");
-        } else if (memberModifyDTO.getNewPassword() != null && memberModifyDTO.getPrePassword() != null) {
+        } else if (StringUtils.hasText(memberModifyDTO.getNewPassword()) && StringUtils.hasText(memberModifyDTO.getPrePassword())) {
             // 1. 이전 비밀번호 일치여부 확인
             boolean matchePre = passwordEncoder.matches(memberModifyDTO.getPrePassword(), member.getPassword());
             if (!matchePre) { // 일치하지 않는 경우
@@ -142,15 +149,21 @@ public class MemberService {
 
 
     public MemberModifyDTO modifyProfileImage(Long memberId, MemberProfileImageDTO imageDTO) {
-        String profileImageURL = imageDTO.getProfileImageURL();
-        if (!StringUtils.hasText(profileImageURL)) {
-            throw new MemberModifyException(BAD_REQUEST, FAIL, "프로필 이미지가 전달되지 않았습니다");
+        // 프로필 이미지를 업로드하고 URL 을 받는다
+        String imageURL = "";
+        Member member = null;
+        try {
+            imageURL = firebaseService.saveFile(imageDTO.getProfileImage());
+            if (!StringUtils.hasText(imageURL)) {
+                throw new MemberModifyException(BAD_REQUEST, FAIL, "프로필 이미지가 전달되지 않았습니다");
+            }
+            member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다"));
+
+            member.setProfile(imageURL);
+        } catch (IOException exception) {
+            throw new MemberModifyException(INTERNAL_SERVER_ERROR, ERROR, "파일 업로드 중 오류가 발생하였습니다");
         }
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다"));
-
-        member.setProfile(profileImageURL);
         return MemberModifyDTO.entityToDto(member);
     }
 

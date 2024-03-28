@@ -215,11 +215,7 @@ public class MemberController {
         return new ApiResponseDTO<>(OK, SUCCESS, "회원탈퇴가 완료되었습니다", null);
     }
 
-    /**
-     * 프로필 이미지 변경 프로세스
-     * 1. 파이어베이스에 이미지를 업로드 하는 API 를 호출한다 -> formData
-     * 2. 프로필 이미지를 수정하는 API 를 호출한다 -> formData
-     */
+    /*
     @Operation(description = "프로필 이미지를 파이어베이스에 업로드하는 API, form-data 형식으로 profileImage 에 전달 필요", summary = "프로필 이미지 업로드")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "OK SUCCESS",
@@ -243,8 +239,11 @@ public class MemberController {
             return new ApiResponseDTO<>(INTERNAL_SERVER_ERROR, ERROR, "이미지 업로드 중 에러가 발생하였습니다", null);
         }
         return new ApiResponseDTO<>(OK, SUCCESS, "프로필 이미지 업로드가 완료되었습니다", Map.of("imageURL", imageURL));
-    }
+    }*/
 
+    /**
+     * 프로필 이미지 전달과 수정을 한 번에 수행
+     */
     @Operation(description = "프로필 이미지를 변경하는 API, form-data 형식으로 profileImageURL 전달 필요", summary = "프로필 이미지 변경")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "OK SUCCESS",
@@ -254,11 +253,12 @@ public class MemberController {
                     description = "프로필 이미지 URL 전달되지 않음",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponseDTO.class)))
     })
-    @PatchMapping("/member/profile/image/{memberId}")
-    public ApiResponseDTO<?> modifyProfileImage(@PathVariable Long memberId, MemberProfileImageDTO imageDTO) {
+    @PostMapping("/member/profile/image")
+    public ApiResponseDTO<?> modifyProfileImage(MemberProfileImageDTO imageDTO) {
         MemberModifyDTO memberModifyDTO = null;
         try {
-            memberModifyDTO = memberService.modifyProfileImage(memberId, imageDTO);
+            Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            memberModifyDTO = memberService.modifyProfileImage(member.getMemberId(), imageDTO);
         } catch (MemberModifyException exception) {
             return new ApiResponseDTO<>(exception.getStatus(), exception.getType(), exception.getMessage(), null);
         } catch (NoSuchElementException exception) {
