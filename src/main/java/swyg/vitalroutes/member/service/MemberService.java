@@ -55,7 +55,9 @@ public class MemberService {
                 .build();
         return memberRepository.save(member);
     }
-
+    
+    /*
+    소셜 로그인 회원가입 변경
     public Member saveSocialMember(SocialMemberDTO memberDTO) {
         if (!memberDTO.getIsChecked()) {
             throw new MemberSignUpException(BAD_REQUEST, FAIL, "닉네임 중복확인이 필요합니다");
@@ -70,7 +72,7 @@ public class MemberService {
                 .build();
         return memberRepository.save(member);
     }
-
+    */
 
     public MemberModifyDTO getMemberInfo(Long memberId) {
         Member member = memberRepository.findById(memberId)

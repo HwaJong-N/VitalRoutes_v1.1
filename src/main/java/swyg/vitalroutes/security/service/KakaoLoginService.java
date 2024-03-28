@@ -19,6 +19,7 @@ import swyg.vitalroutes.security.domain.KakaoTokenResponse;
 import swyg.vitalroutes.security.domain.KakaoUserInfoResponse;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -33,8 +34,29 @@ public class KakaoLoginService {
 
     private final MemberRepository memberRepository;
 
+    // 회원가입 여부 판단
     public Optional<Member> findMember(String socialId, SocialType socialType) {
         return memberRepository.findBySocialIdAndSocialType(socialId, socialType);
+    }
+
+    // 회원가입이 되어 있지 않은 경우 랜덤으로 닉네임을 생성하고 저장
+    public Member saveSocialMember(String socialId, String name, SocialType socialType) {
+        Member member = Member.builder()
+                .name(name)
+                .nickname(createRandomNickname(name))
+                .profile("https://firebasestorage.googleapis.com/v0/b/vitalroutes-467cb.appspot.com/o/profile.png?alt=media")
+                .socialId(socialId)
+                .socialType(socialType)
+                .build();
+        return memberRepository.save(member);
+    }
+
+
+    // 닉네임 랜덤 생성
+    public String createRandomNickname(String name) {
+        Random random = new Random();
+        int randomNumber = 100000 + random.nextInt(900000);
+        return name + randomNumber;
     }
 
     public String[] kakaoLogin(String code) {

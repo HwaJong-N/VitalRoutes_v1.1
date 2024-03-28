@@ -99,6 +99,8 @@ public class MemberController {
         return new ApiResponseDTO<>(CREATED, SUCCESS, "회원가입이 완료되었습니다", null);
     }
 
+    /*
+    소셜 로그인 회원가입 변경
     @Operation(description = "최초로 소셜 로그인한 경우, 닉네임 입력 후에 호출해야 하는 API", summary = "소셜 사용자 회원 가입")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "CREATED",
@@ -131,6 +133,7 @@ public class MemberController {
         }
         return new ApiResponseDTO<>(CREATED, SUCCESS, "회원가입이 완료되었습니다", null);
     }
+    */
 
     @Operation(description = "회원의 프로필 정보를 가져오는 API", summary = "회원 정보 조회")
     @ApiResponses(value = {

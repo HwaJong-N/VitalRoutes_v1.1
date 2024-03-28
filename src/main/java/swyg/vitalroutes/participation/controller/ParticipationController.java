@@ -179,35 +179,9 @@ public class ParticipationController {
         }
         return new ApiResponseDTO<>(OK, SUCCESS, null, participationResponseDTO);
     }
-
-    /**
-     * 참여 이미지를 변경하는 경우 호출되는 API
-     * sequence 와 fileURL 이 반환
-     */
-    @Operation(description = "챌린지 참여의 이미지 수정, 챌린지 수정할 때 이미지를 수정하는 경우 해당 API 를 호출해서 파일을 파이어베이스에 업로드해야함, ImageSaveDTO 참고하면 좋음",
-            summary = "챌린지 참여의 이미지 수정")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "OK SUCCESS",
-                    description = "이미지 업로드 완료",
-                    content = @Content(mediaType = "application/json", examples = @ExampleObject(name = "Postman 에서 확인한 응답 예시", value = "{\n" +
-                            "    \"status\": \"OK\",\n" +
-                            "    \"type\": \"SUCCESS\",\n" +
-                            "    \"message\": \"이미지가 업로드 되었습니다\",\n" +
-                            "    \"data\": {\n" +
-                            "        \"sequence\": 3,\n" +
-                            "        \"fileName\": \"modifyURL\"\n" +
-                            "    }\n" +
-                            "}"))),
-            @ApiResponse(responseCode = "BAD REQUEST",
-                    description = "이미지에 위치정보가 없음",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponseDTO.class))),
-            @ApiResponse(responseCode = "INTERNAL_SERVER_ERROR",
-                    description = "이미지 처리 중 오류가 발생",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiResponseDTO.class)))
-    })
-    @Parameters(value = {
-            @Parameter(name = "imageDTO", description = "file 은 string 이 아닌 파일 자체, form-data 로 전달 필요")
-    })
+    
+    /*
+    사진은 수정 불가
     @PostMapping("/image")
     public ApiResponseDTO<?> uploadImage(ImageSaveDTO imageDTO) {
         ImageResponseDTO imageResponseDTO = null;
@@ -220,6 +194,7 @@ public class ParticipationController {
         }
         return new ApiResponseDTO<>(OK, SUCCESS, "이미지가 업로드 되었습니다", imageResponseDTO);
     }
+    */
 
 
     @Operation(description = "챌린지 참여의 수정, 수정 내용을 반영할 때 사용, fileName 은 URL 을 의미", summary = "챌린지 참여 수정")

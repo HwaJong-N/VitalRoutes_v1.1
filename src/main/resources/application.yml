@@ -40,7 +40,7 @@ jwt:
 kakao:
   login:
     client-id: ${KAKAO_CLIENT_ID}
-    redirect-uri: http://localhost:3000/member/kakao
+    redirect-uri: http://localhost:5173/member/kakao
 
 firebase:
   bucket: ${BUCKET}

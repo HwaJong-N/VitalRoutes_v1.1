@@ -61,6 +61,7 @@ public class KakaoLoginController {
         response.sendRedirect(uriString);
     }
 
+    /*
     @Operation(description = "카카오 로그인 후 전달 받은 인가코드를 전달한다", summary = "카카오 인가코드 전달 및 소셜 로그인 진행")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "OK SUCCESS(type)",
@@ -92,5 +93,23 @@ public class KakaoLoginController {
         socialMemberDTO.setSocialId(userInfo[0]);
         socialMemberDTO.setSocialType("KAKAO");
         return new ApiResponseDTO<>(OK, ONGOING, "회원가입 완료를 위해 닉네임을 설정해주세요", socialMemberDTO);
+    }
+    */
+
+    @GetMapping("/oauth2/kakao/login")
+    public ApiResponseDTO<?> kakaoLogin(@RequestParam("code") String code) {
+        String[] userInfo = kakaoLoginService.kakaoLogin(code);
+        Optional<Member> optionalMember = kakaoLoginService.findMember(userInfo[0], SocialType.KAKAO);
+        Member member = null;
+        if (optionalMember.isEmpty()) {
+            log.info("----------------------- 회원가입 필요 -----------------------");
+            member = kakaoLoginService.saveSocialMember(userInfo[0], userInfo[1], SocialType.KAKAO);
+        } else {
+            member = optionalMember.get();
+        }
+        Map<String, Object> claims = member.getClaims();
+        claims.put("accessToken", jwtTokenProvider.generateToken(claims, JwtConstants.ACCESS_EXP_TIME));
+        claims.put("refreshToken", jwtTokenProvider.generateToken(claims, JwtConstants.REFRESH_EXP_TIME));
+        return new ApiResponseDTO<>(OK, SUCCESS, "로그인이 완료되었습니다", claims);
     }
 }
