@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 @Data
 public class CommentResponseDTO {
     private Long commentId;
+    private Long memberId;
     private String memberProfile;
     private String nickname;
 
@@ -20,6 +21,7 @@ public class CommentResponseDTO {
 
     public CommentResponseDTO(Comment comment) {
         commentId = comment.getCommentId();
+        memberId = comment.getMember().getMemberId();
         memberProfile = comment.getMember().getProfile();
         nickname = comment.getMember().getNickname();
         content = comment.getContent();
