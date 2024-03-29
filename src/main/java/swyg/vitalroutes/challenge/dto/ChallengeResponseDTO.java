@@ -35,7 +35,7 @@ public class ChallengeResponseDTO {
         nickname = challenge.getMember().getNickname();
         title = challenge.getTitle();
         content = challenge.getContent();
-        type = challenge.getType().name();
+        type = challenge.getType().getValue();
         roadAddress = challenge.getRoadAddress();
         region = challenge.getRegion();
         totalParticipation = challenge.getParticipationList().size();
