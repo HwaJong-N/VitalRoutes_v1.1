@@ -126,7 +126,7 @@ public class ChallengeController {
         return new ApiResponseDTO<>(OK, SUCCESS, "챌린지 등록이 완료되었습니다", null);
     }
 
-    // 챌린지 수정, 제목과 내용만 수정 가능
+    // 챌린지 수정, 이미지 수정 없음
     @PatchMapping("/{challengeId}")
     public ApiResponseDTO<?> modifyChallenge(@PathVariable Long challengeId, @RequestBody ChallengeModifyDTO modifyDTO) {
         try {

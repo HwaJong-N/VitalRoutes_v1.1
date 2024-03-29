@@ -40,7 +40,7 @@ jwt:
 kakao:
   login:
     client-id: ${KAKAO_CLIENT_ID}
-    redirect-uri: http://localhost:5173/member/kakao
+    redirect-uri: https://hj-vital-routes.vercel.app/member/kakao
 
 firebase:
   bucket: ${BUCKET}

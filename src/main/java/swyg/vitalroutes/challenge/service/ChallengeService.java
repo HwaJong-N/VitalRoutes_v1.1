@@ -141,6 +141,20 @@ public class ChallengeService {
                 .orElseThrow(() -> new ChallengeException(NOT_FOUND, FAIL, "챌린지가 존재하지 않습니다"));
         challenge.setTitle(modifyDTO.getTitle());
         challenge.setContent(modifyDTO.getContent());
+
+        ChallengeType type = ChallengeType.findByKorean(modifyDTO.getType());
+        challenge.setType(type);
+
+        List<ChallengeTag> tagList = challenge.getTagList();
+        tagList.clear();
+        for (String tag : modifyDTO.getTags()) {
+            Tags byKorean = Tags.findByKorean(tag);
+            if (byKorean == null) {
+                continue;
+            }
+            String name = byKorean.name();
+            tagList.add(ChallengeTag.createChallengeTag(name, tag));
+        }
     }
 
 
