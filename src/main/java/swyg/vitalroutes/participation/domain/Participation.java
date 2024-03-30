@@ -32,7 +32,7 @@ public class Participation {
     private Member member;
 
     // 양방향( Challenge 에서 Participation 조회 필요 ), 연관관계 설정 O
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
