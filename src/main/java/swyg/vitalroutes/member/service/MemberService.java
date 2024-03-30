@@ -90,6 +90,7 @@ public class MemberService {
     public void deleteMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다"));
+        firebaseService.deleteFile(member.getProfile());
         memberRepository.deleteById(memberId);
     }
 
@@ -159,6 +160,11 @@ public class MemberService {
             }
             member = memberRepository.findById(memberId)
                     .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다"));
+
+            // 기본 프로필이 아닌 경우 기존 프로필 삭제
+            if (!member.getProfile().equals("https://firebasestorage.googleapis.com/v0/b/vitalroutes-467cb.appspot.com/o/profile.png?alt=media")) {
+                firebaseService.deleteFile(member.getProfile());
+            }
 
             member.setProfile(imageURL);
         } catch (IOException exception) {

@@ -21,6 +21,8 @@ import swyg.vitalroutes.firebase.service.FirebaseService;
 import swyg.vitalroutes.kakao.service.KakaoMapService;
 import swyg.vitalroutes.member.domain.Member;
 import swyg.vitalroutes.member.repository.MemberRepository;
+import swyg.vitalroutes.participation.domain.Participation;
+import swyg.vitalroutes.participation.domain.ParticipationImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +112,20 @@ public class ChallengeService {
     public void deleteChallenge(Long challengeId) {
         Challenge challenge = challengeRepository.findByChallengeId(challengeId)
                 .orElseThrow(() -> new ChallengeException(NOT_FOUND, FAIL, "챌린지가 존재하지 않습니다"));
+        firebaseService.deleteFile(challenge.getTitleImg());    // 대표 이미지 삭제
+        List<ChallengeLocation> locationList = challenge.getLocationList();
+        for (ChallengeLocation challengeLocation : locationList) {
+            firebaseService.deleteFile(challengeLocation.getFileName());    // 각 Spot 사진 삭제
+        }
+        // 참여 게시글의 Spot 사진 삭제
+        List<Participation> participationList = challenge.getParticipationList();
+        for (Participation participation : participationList) {
+            List<ParticipationImage> participationImages = participation.getParticipationImages();
+            for (ParticipationImage participationImage : participationImages) {
+                firebaseService.deleteFile(participationImage.getFileName());
+            }
+        }
+
         challengeRepository.deleteById(challengeId);
     }
 

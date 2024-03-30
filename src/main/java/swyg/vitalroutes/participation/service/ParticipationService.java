@@ -109,6 +109,12 @@ public class ParticipationService {
     public void deleteParticipation(Long participationId) {
         Participation participation = participationRepository.findById(participationId)
                 .orElseThrow(() -> new ParticipationException(NOT_FOUND, FAIL, "참여 게시글이 존재하지 않습니다"));
+
+        List<ParticipationImage> participationImages = participation.getParticipationImages();
+        for (ParticipationImage participationImage : participationImages) {
+            firebaseService.deleteFile(participationImage.getFileName());
+        }
+
         participationRepository.deleteById(participationId);
     }
 

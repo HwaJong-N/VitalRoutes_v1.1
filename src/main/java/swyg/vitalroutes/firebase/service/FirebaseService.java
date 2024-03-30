@@ -46,4 +46,13 @@ public class FirebaseService {
         // 조회 링크 생성
         return readUrl + filename + "?alt=media";
     }
+
+    public void deleteFile(String viewUrl) {
+        Bucket bucket = StorageClient.getInstance().bucket(firebaseBucket);
+        String filename = viewUrl.replace(readUrl, "").replace("?alt=media", "");
+        Blob blob = bucket.get(filename);
+        if (blob != null) {
+            blob.delete();
+        }
+    }
 }
