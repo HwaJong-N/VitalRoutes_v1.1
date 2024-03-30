@@ -25,12 +25,12 @@ public class Comment {
     private LocalDateTime localDateTime;
 
     // 참여의 외래키를 관리
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "participation_id")
     private Participation participation;
 
     // 멤버와 연관관계
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
