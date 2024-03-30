@@ -2,6 +2,8 @@ package swyg.vitalroutes.report.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import swyg.vitalroutes.challenge.domain.Challenge;
 import swyg.vitalroutes.comments.domain.Comment;
 import swyg.vitalroutes.member.domain.Member;
@@ -28,14 +30,17 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chalenge_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Challenge challenge;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participation_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Participation participation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment comment;
 
     private String reason;
