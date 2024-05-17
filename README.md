@@ -30,8 +30,9 @@
 # 🛠 기술 스택
 
 - Language : Java 17
-- Framework : SpringBoot 3.2.2, SpringSecurity, Spring Data JPA, QueryDSL
+- Framework : SpringBoot 3.2.2, SpringSecurity
 - DB : MariaDB
+- DB Access : Spring Data JPA, QueryDSL
 - Server : Ubuntu, Nginx, Github Actions, Docker
 - ETC : Kakao Login API, Kakao Local API, Google SMTP, Firebase
 
